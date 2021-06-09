@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GuideView extends FrameLayout {
 
-    private final List<GuidePage> pages = new ArrayList<>();
+    private final List<GuideGroup> pages = new ArrayList<>();
 
     public GuideView(@NonNull Context context) {
         super(context);
@@ -42,18 +42,23 @@ public class GuideView extends FrameLayout {
 //        paint.setColor(getResources().getColor(R.color.transparent));
     }
 
-    public void setPages(List<GuidePage> pages) {
+    public void setPages(List<GuideGroup> pages) {
         this.pages.clear();
         this.pages.addAll(pages);
-        requestLayout();
-        invalidate();
+        removeAllViews();
+        for (GuideItem item : pages.get(0).getItems()) {
+            if (item.getTipView() != null)
+                addView(item.getTipView());
+        }
     }
 
     public boolean next() {
         if (pages.size() == 1) return false;
         pages.remove(0);
-        requestLayout();
-        invalidate();
+        removeAllViews();
+        for (GuideItem item : pages.get(0).getItems()) {
+            addView(item.getTipView());
+        }
         return true;
     }
 
@@ -61,7 +66,7 @@ public class GuideView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (pages.size() == 0) return;
-        GuidePage page = pages.get(0);
+        GuideGroup page = pages.get(0);
         @SuppressLint("DrawAllocation")
         Path path = new Path();
         for (GuideItem item : page.getItems()) {
@@ -69,7 +74,7 @@ public class GuideView extends FrameLayout {
             path.addPath(item.getPath());
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            canvas.clipPath(path, Region.Op.XOR);
+            canvas.clipPath(path, Region.Op.DIFFERENCE);
         } else {
             canvas.clipOutPath(path);
         }

@@ -14,10 +14,12 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="GuideStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="GuideStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/transparent</item>
 <!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:windowAnimationStyle">@style/noAnimation</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="noAnimation">
@@ -33,6 +35,5 @@
         <item name="android:taskToFrontExitAnimation">@null</item>
         <item name="android:taskToBackEnterAnimation">@null</item>
         <item name="android:taskToBackExitAnimation">@null</item>
-
     </style>
 </resources>

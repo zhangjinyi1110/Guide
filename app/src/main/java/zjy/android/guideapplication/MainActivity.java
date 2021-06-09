@@ -18,10 +18,10 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         View.OnClickListener listener = v -> {
 //            overridePendingTransition(0, 0);
-            ArrayList<GuidePage> list = new ArrayList<>();
-            list.add(new GuidePage(new GuideItem(binding.center, R.layout.tip_arrows_top)).add(new GuideItem(binding.centerBottom)));
-            list.add(new GuidePage(new GuideItem(binding.centerLeft, R.layout.tip_arrows_top)));
-            list.add(new GuidePage(new GuideItem(binding.rightTop, R.layout.tip_arrows_top)));
+            ArrayList<GuideGroup> list = new ArrayList<>();
+            list.add(new GuideGroup(new GuideItem(binding.center, R.layout.tip_arrows_top)).add(new GuideItem(binding.centerBottom)));
+            list.add(new GuideGroup(new GuideItem(binding.centerLeft, R.layout.tip_arrows_top, 100, 100)));
+            list.add(new GuideGroup(new GuideItem(binding.rightTop, R.layout.tip_arrows_top)));
             GuideActivity.start(this, list);
         };
         binding.center.setOnClickListener(listener);

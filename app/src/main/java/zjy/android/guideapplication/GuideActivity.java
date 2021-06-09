@@ -12,9 +12,10 @@ import java.util.List;
 
 public class GuideActivity extends FragmentActivity {
 
-    public static void start(Context context, ArrayList<GuidePage> pages) {
+    public static void start(Context context, ArrayList<GuideGroup> pages) {
         context.startActivity(new Intent(context, GuideActivity.class)
                 .putExtra("data", pages));
+//        ((Activity) context).overridePendingTransition(0, 0);
     }
 
     @Override
@@ -25,8 +26,8 @@ public class GuideActivity extends FragmentActivity {
         int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         int barHeight = getResources().getDimensionPixelSize(resId);
 
-        List<GuidePage> pages = (List<GuidePage>) getIntent().getSerializableExtra("data");
-        for (GuidePage page : pages) {
+        List<GuideGroup> pages = (List<GuideGroup>) getIntent().getSerializableExtra("data");
+        for (GuideGroup page : pages) {
             for (GuideItem item : page.getItems()) {
                 item.init(this, barHeight);
             }
@@ -43,7 +44,7 @@ public class GuideActivity extends FragmentActivity {
 
     @Override
     public void finish() {
-        overridePendingTransition(0, 0);
         super.finish();
+        overridePendingTransition(0, 0);
     }
 }

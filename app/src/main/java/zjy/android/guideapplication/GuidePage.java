@@ -1,29 +1,29 @@
 package zjy.android.guideapplication;
 
-import android.view.View;
+import android.app.Activity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
-public class GuidePage implements Serializable {
+/**
+ * @Create zhang
+ * @DATE 2021/6/9 0009
+ * @DESC
+ */
+public class GuidePage {
 
-    private final List<GuideItem> items = new ArrayList<>();
+    private Activity activity;
+    private ArrayList<GuideGroup> groups;
 
-    public GuidePage(View view) {
-        this(new GuideItem(view));
+    private GuidePage(Activity activity) {
+        this.activity = activity;
     }
 
-    public GuidePage(GuideItem item) {
-        this.items.add(item);
+    public static GuidePage with(Activity activity) {
+        return new GuidePage(activity);
     }
 
-    public GuidePage add(GuideItem item) {
-        this.items.add(item);
-        return this;
+    public void start() {
+        GuideActivity.start(activity, groups);
     }
 
-    public List<GuideItem> getItems() {
-        return items;
-    }
 }

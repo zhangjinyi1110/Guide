@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Path;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.io.Serializable;
 
@@ -36,6 +37,10 @@ public class GuideItem implements Serializable {
         this(view, ShapeEnum.RECTANGLE, resId, 0, 0, GravityEnum.BOTTOM);
     }
 
+    public GuideItem(View view, int resId, int offsetX, int offsetY) {
+        this(view, ShapeEnum.RECTANGLE, resId, offsetX, offsetY, GravityEnum.BOTTOM);
+    }
+
     public GuideItem(View view, ShapeEnum shape, int resId, int offsetX, int offsetY, GravityEnum gravity) {
         this.shape = shape;
         this.gravity = gravity;
@@ -55,6 +60,7 @@ public class GuideItem implements Serializable {
     private void initTipView(Context context) {
         if (resId == 0) return;
         tipView = LayoutInflater.from(context).inflate(resId, null);
+        tipView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         switch (gravity) {
             case TOP:
                 tipView.setY(top + offsetY - tipView.getHeight());
