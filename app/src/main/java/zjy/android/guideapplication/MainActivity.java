@@ -1,12 +1,14 @@
 package zjy.android.guideapplication;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.ColorUtils;
 import androidx.databinding.DataBindingUtil;
-
-import java.util.ArrayList;
 
 import zjy.android.guideapplication.databinding.ActivityMainBinding;
 
@@ -16,14 +18,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        View.OnClickListener listener = v -> {
-//            overridePendingTransition(0, 0);
-            ArrayList<GuideGroup> list = new ArrayList<>();
-            list.add(new GuideGroup(new GuideItem(binding.center, R.layout.tip_arrows_top)).add(new GuideItem(binding.centerBottom)));
-            list.add(new GuideGroup(new GuideItem(binding.centerLeft, R.layout.tip_arrows_top, 100, 100)));
-            list.add(new GuideGroup(new GuideItem(binding.rightTop, R.layout.tip_arrows_top)));
-            GuideActivity.start(this, list);
-        };
+        View.OnClickListener listener = v -> GuidePage.init(this)
+                .add(new GuideItem.Builder().setTarget(binding.centerTop).setTipResId(R.layout.tip_arrows_top).setTipOffsetX(-100).build())
+                .add(new GuideItem.Builder().setTarget(binding.centerBottom).setTipResId(R.layout.tip_arrows_bottom).setGravity(GravityEnum.TOP).build())
+                .add(new GuideItem.Builder().setTarget(binding.centerLeft).setTipResId(R.layout.tip_arrows_left).setTipOffsetX(-150).setTipOffsetY(310).setGravity(GravityEnum.RIGHT).build())
+                .add(new GuideItem.Builder().setTarget(binding.centerRight).setTipResId(R.layout.tip_arrows_right).setGravity(GravityEnum.LEFT).build())
+                .start();
         binding.center.setOnClickListener(listener);
         binding.leftBottom.setOnClickListener(listener);
         binding.leftTop.setOnClickListener(listener);

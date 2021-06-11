@@ -11,19 +11,37 @@ import java.util.ArrayList;
  */
 public class GuidePage {
 
-    private Activity activity;
-    private ArrayList<GuideGroup> groups;
+    private final Activity activity;
+    private final ArrayList<GuideGroup> groups;
+    private GuideGroup currGroup;
 
     private GuidePage(Activity activity) {
         this.activity = activity;
+        this.groups = new ArrayList<>();
     }
 
-    public static GuidePage with(Activity activity) {
+    public static GuidePage init(Activity activity) {
         return new GuidePage(activity);
     }
 
+    public GuidePage add(GuideItem item) {
+        currGroup = new GuideGroup(item);
+        groups.add(currGroup);
+        return this;
+    }
+
+    public GuidePage with(GuideItem item) {
+        if (currGroup == null) {
+            add(item);
+        } else {
+            currGroup.add(item);
+        }
+        return this;
+    }
+
     public void start() {
-        GuideActivity.start(activity, groups);
+//        GuideActivity.start(activity, groups);
+        new GuidePopupWindow(activity, groups).showAsDropDown(activity.getWindow().getDecorView());
     }
 
 }
