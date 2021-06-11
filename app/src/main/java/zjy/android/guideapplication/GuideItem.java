@@ -2,7 +2,6 @@ package zjy.android.guideapplication;
 
 import android.content.Context;
 import android.graphics.Path;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,9 @@ public class GuideItem implements Serializable {
     private int bottom;
     private Path path;
     private View tipView;
+    private int nextClickId;
+    private int skipClickId;
+    private boolean emptyView = true;
 
     private int resId;
     private int offsetX;
@@ -26,40 +28,22 @@ public class GuideItem implements Serializable {
 
     private GravityEnum gravity;
 
-//    public GuideItem(View view) {
-//        this(view, ShapeEnum.RECTANGLE, 0, 0, 0, GravityEnum.BOTTOM);
-//    }
-//
-//    public GuideItem(View view, ShapeEnum shape) {
-//        this(view, shape, 0, 0, 0, GravityEnum.BOTTOM);
-//    }
-//
-//    public GuideItem(View view, int resId) {
-//        this(view, ShapeEnum.RECTANGLE, resId, 0, 0, GravityEnum.BOTTOM);
-//    }
-//
-//    public GuideItem(View view, int resId, int offsetX, int offsetY) {
-//        this(view, ShapeEnum.RECTANGLE, resId, offsetX, offsetY, GravityEnum.BOTTOM);
-//    }
-//
-//    public GuideItem(View view, ShapeEnum shape, int resId, int offsetX, int offsetY, GravityEnum gravity) {
-//        this.shape = shape;
-//        this.gravity = gravity;
-//        this.resId = resId;
-//        this.offsetX = offsetX;
-//        this.offsetY = offsetY;
-//        initPoint(view);
-//    }
-
     public void init(Context context, int barHeight) {
-        top -= barHeight;
-        bottom -= barHeight;
-        initPath();
+        if (!emptyView) {
+            top -= barHeight;
+            bottom -= barHeight;
+            initPath();
+        }
         initTipView(context);
     }
 
     private void initTipView(Context context) {
         if (resId == 0) return;
+        if (emptyView) {
+            tipView = LayoutInflater.from(context).inflate(resId, null);
+            tipView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return;
+        }
         tipView = LayoutInflater.from(context).inflate(resId, null);
         tipView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tipView.setVisibility(View.INVISIBLE);
@@ -123,6 +107,7 @@ public class GuideItem implements Serializable {
     }
 
     private void initPoint(View view) {
+        emptyView = false;
         int[] lt = new int[2];
         view.getLocationOnScreen(lt);
         left = lt[0];
@@ -137,6 +122,14 @@ public class GuideItem implements Serializable {
 
     public View getTipView() {
         return tipView;
+    }
+
+    public View getNextView() {
+        return tipView.findViewById(nextClickId);
+    }
+
+    public View getSkipView() {
+        return tipView.findViewById(skipClickId);
     }
 
     public static class Builder {
@@ -165,6 +158,16 @@ public class GuideItem implements Serializable {
 
         public Builder setTipResId(int resId) {
             item.resId = resId;
+            return this;
+        }
+
+        public Builder setNextClickId(int clickId) {
+            item.nextClickId = clickId;
+            return this;
+        }
+
+        public Builder setSkipClickId(int clickId) {
+            item.skipClickId = clickId;
             return this;
         }
 

@@ -40,7 +40,6 @@ public class GuidePage {
     }
 
     public void start() {
-//        GuideActivity.start(activity, groups);
         new GuidePopupWindow(activity, groups).showAsDropDown(activity.getWindow().getDecorView());
     }
 

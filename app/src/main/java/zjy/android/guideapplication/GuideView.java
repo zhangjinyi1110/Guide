@@ -6,6 +6,7 @@ import android.graphics.Path;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -47,18 +48,45 @@ public class GuideView extends FrameLayout {
         update();
     }
 
-    public boolean next() {
-        if (pages.size() == 1) return false;
-        pages.remove(0);
-        update();
-        return true;
+    public void next() {
+        if (pages.size() == 1) {
+            finish();
+        } else {
+            pages.remove(0);
+            update();
+        }
+    }
+
+    private void finish() {
+        if (onFinishListener != null) {
+            onFinishListener.inFinish();
+        }
     }
 
     private void update() {
         removeAllViews();
         for (GuideItem item : pages.get(0).getItems()) {
-            if (item.getTipView() != null)
-                addView(item.getTipView());
+            initTipView(item);
+        }
+    }
+
+    private void initTipView(GuideItem item) {
+        View tipView = item.getTipView();
+        if (tipView != null) {
+            addView(tipView);
+            View next = item.getNextView();
+            View skip = item.getSkipView();
+            if (next == null && skip == null) {
+                setOnClickListener(v -> next());
+            }
+            if (next != null) {
+                next.setOnClickListener(v -> next());
+            }
+            if (skip != null) {
+                skip.setOnClickListener(v -> finish());
+            }
+        } else {
+            setOnClickListener(v -> next());
         }
     }
 
@@ -69,7 +97,8 @@ public class GuideView extends FrameLayout {
         GuideGroup page = pages.get(0);
         path.reset();
         for (GuideItem item : page.getItems()) {
-            path.addPath(item.getPath());
+            if (item.getPath() != null)
+                path.addPath(item.getPath());
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             canvas.clipPath(path, Region.Op.DIFFERENCE);
@@ -79,13 +108,14 @@ public class GuideView extends FrameLayout {
         canvas.drawColor(getResources().getColor(R.color.alpha));
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+    private OnFinishListener onFinishListener;
+
+    public void setOnFinishListener(OnFinishListener onFinishListener) {
+        this.onFinishListener = onFinishListener;
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    public interface OnFinishListener {
+        void inFinish();
     }
+
 }

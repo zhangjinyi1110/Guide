@@ -1,13 +1,9 @@
 package zjy.android.guideapplication;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.ColorUtils;
 import androidx.databinding.DataBindingUtil;
 
 import zjy.android.guideapplication.databinding.ActivityMainBinding;
@@ -18,11 +14,41 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        GuideItem item = new GuideItem.Builder()
+                .setSkipClickId(R.id.skip)
+                .setTipResId(R.layout.layout_skip)
+                .build();
         View.OnClickListener listener = v -> GuidePage.init(this)
-                .add(new GuideItem.Builder().setTarget(binding.centerTop).setTipResId(R.layout.tip_arrows_top).setTipOffsetX(-100).build())
-                .add(new GuideItem.Builder().setTarget(binding.centerBottom).setTipResId(R.layout.tip_arrows_bottom).setGravity(GravityEnum.TOP).build())
-                .add(new GuideItem.Builder().setTarget(binding.centerLeft).setTipResId(R.layout.tip_arrows_left).setTipOffsetX(-150).setTipOffsetY(310).setGravity(GravityEnum.RIGHT).build())
-                .add(new GuideItem.Builder().setTarget(binding.centerRight).setTipResId(R.layout.tip_arrows_right).setGravity(GravityEnum.LEFT).build())
+                .add(new GuideItem.Builder()
+                        .setTarget(binding.centerTop)
+                        .setTipResId(R.layout.tip_arrows_top)
+                        .setTipOffsetX(-100)
+                        .setNextClickId(R.id.tips)
+                        .build())
+                .with(item)
+                .with(new GuideItem.Builder()
+                        .setTarget(binding.centerBottom)
+                        .setTipResId(R.layout.tip_arrows_bottom)
+                        .setGravity(GravityEnum.TOP)
+                        .setNextClickId(R.id.tips)
+                        .setShape(ShapeEnum.CIRCLE)
+                        .setTipOffsetY(-50)
+                        .build())
+                .add(new GuideItem.Builder()
+                        .setTarget(binding.centerLeft)
+                        .setTipResId(R.layout.tip_arrows_left)
+                        .setTipOffsetX(-150)
+                        .setTipOffsetY(310)
+                        .setNextClickId(R.id.tips)
+                        .setGravity(GravityEnum.RIGHT).build())
+                .with(item)
+                .add(new GuideItem.Builder()
+                        .setTarget(binding.centerRight)
+                        .setNextClickId(R.id.tips)
+                        .setTipResId(R.layout.tip_arrows_right)
+                        .setGravity(GravityEnum.LEFT)
+                        .build())
+                .with(item)
                 .start();
         binding.center.setOnClickListener(listener);
         binding.leftBottom.setOnClickListener(listener);
