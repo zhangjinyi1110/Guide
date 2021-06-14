@@ -24,17 +24,17 @@ public class GuidePage {
         return new GuidePage(activity);
     }
 
-    public GuidePage add(GuideItem item) {
-        currGroup = new GuideGroup(item);
+    public GuidePage add(ICustomGuide guide) {
+        currGroup = new GuideGroup(guide);
         groups.add(currGroup);
         return this;
     }
 
-    public GuidePage with(GuideItem item) {
+    public GuidePage with(ICustomGuide guide) {
         if (currGroup == null) {
-            add(item);
+            add(guide);
         } else {
-            currGroup.add(item);
+            currGroup.add(guide);
         }
         return this;
     }

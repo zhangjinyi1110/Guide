@@ -36,17 +36,9 @@ public class GuidePopupWindow extends PopupWindow {
         setAnimationStyle(0);
 
         originalColor = activity.getWindow().getStatusBarColor();
-        int resId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int barHeight = activity.getResources().getDimensionPixelSize(resId);
-
-        for (GuideGroup page : groups) {
-            for (GuideItem item : page.getItems()) {
-                item.init(activity, barHeight);
-            }
-        }
 
         GuideView guideView = view.findViewById(R.id.guide_view);
-        guideView.setPages(groups);
+        guideView.setGroups(groups);
         guideView.setOnFinishListener(this::dismiss);
     }
 

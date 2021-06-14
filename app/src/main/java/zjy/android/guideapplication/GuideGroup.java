@@ -1,22 +1,21 @@
 package zjy.android.guideapplication;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuideGroup implements Serializable {
+public class GuideGroup {
 
-    private final List<GuideItem> items = new ArrayList<>();
+    private final List<ICustomGuide> guides = new ArrayList<>();
     
-    public GuideGroup(GuideItem item) {
-        this.items.add(item);
+    public GuideGroup(ICustomGuide guide) {
+        this.guides.add(guide);
     }
 
-    public void add(GuideItem item) {
-        this.items.add(item);
+    public void add(ICustomGuide guide) {
+        this.guides.add(guide);
     }
 
-    public List<GuideItem> getItems() {
-        return items;
+    public List<ICustomGuide> getGuides() {
+        return guides;
     }
 }
