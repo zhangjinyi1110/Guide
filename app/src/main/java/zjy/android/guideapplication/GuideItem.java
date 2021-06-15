@@ -13,7 +13,8 @@ public class GuideItem implements ICustomGuide {
 
     private RectF highlightRectF;
     private Path highlightPath;
-    private ShapeEnum shape;
+    private Shape shape;
+    private Padding padding;
 
     private int resId;
     private int offsetX;
@@ -22,7 +23,7 @@ public class GuideItem implements ICustomGuide {
     private int nextClickId;
     private int skipClickId;
     private boolean emptyView = true;
-    private GravityEnum gravity;
+    private Direction direction;
 
     private void initTipView(Context context) {
         if (resId == 0) return;
@@ -37,7 +38,7 @@ public class GuideItem implements ICustomGuide {
         float centerX = highlightRectF.left + (highlightRectF.right - highlightRectF.left) / 2f;
         float centerY = highlightRectF.top + (highlightRectF.bottom - highlightRectF.top) / 2f;
         tipView.post(() -> {
-            switch (gravity) {
+            switch (direction) {
                 case TOP:
                     tipView.setY(highlightRectF.top + offsetY - tipView.getHeight());
                     tipView.setX(offsetX + centerX - tipView.getWidth() / 2f);
@@ -64,6 +65,9 @@ public class GuideItem implements ICustomGuide {
     private void initPath() {
         highlightPath = new Path();
         switch (shape) {
+            case ROUND_RECTANGLE:
+                shapeRoundRectangle();
+                break;
             case RECTANGLE:
                 shapeRectangle();
                 break;
@@ -77,6 +81,10 @@ public class GuideItem implements ICustomGuide {
         }
     }
 
+    private void shapeRoundRectangle() {
+        highlightPath.addRoundRect(highlightRectF, 25, 25, Path.Direction.CW);
+    }
+
     private void shapeCircle() {
         float w = highlightRectF.right - highlightRectF.left;
         float h = highlightRectF.bottom - highlightRectF.top;
@@ -86,11 +94,7 @@ public class GuideItem implements ICustomGuide {
     }
 
     private void shapeRectangle() {
-        highlightPath.moveTo(highlightRectF.left, highlightRectF.top);
-        highlightPath.lineTo(highlightRectF.left, highlightRectF.bottom);
-        highlightPath.lineTo(highlightRectF.right, highlightRectF.bottom);
-        highlightPath.lineTo(highlightRectF.right, highlightRectF.top);
-        highlightPath.close();
+        highlightPath.addRect(highlightRectF, Path.Direction.CW);
     }
 
     private void initPoint(View target, boolean hasStateBar) {
@@ -102,11 +106,14 @@ public class GuideItem implements ICustomGuide {
         }
         int[] lt = new int[2];
         target.getLocationOnScreen(lt);
+        if (padding == null) {
+            padding = Padding.all(0);
+        }
         highlightRectF = new RectF();
-        highlightRectF.left = lt[0];
-        highlightRectF.right = highlightRectF.left + target.getWidth();
-        highlightRectF.top = lt[1] - barHeight;
-        highlightRectF.bottom = highlightRectF.top + target.getHeight();
+        highlightRectF.left = lt[0] - padding.left;
+        highlightRectF.right = highlightRectF.left + target.getWidth() + padding.right;
+        highlightRectF.top = lt[1] - barHeight - padding.top;
+        highlightRectF.bottom = highlightRectF.top + target.getHeight() + padding.bottom;
     }
 
     @Override
@@ -149,13 +156,13 @@ public class GuideItem implements ICustomGuide {
             return this;
         }
 
-        public Builder setShape(ShapeEnum shape) {
+        public Builder setShape(Shape shape) {
             item.shape = shape;
             return this;
         }
 
-        public Builder setGravity(GravityEnum gravity) {
-            item.gravity = gravity;
+        public Builder setDirection(Direction direction) {
+            item.direction = direction;
             return this;
         }
 
@@ -185,11 +192,11 @@ public class GuideItem implements ICustomGuide {
         }
 
         public GuideItem build() {
-            if (item.gravity == null) {
-                item.gravity = GravityEnum.BOTTOM;
+            if (item.direction == null) {
+                item.direction = Direction.BOTTOM;
             }
             if (item.shape == null) {
-                item.shape = ShapeEnum.RECTANGLE;
+                item.shape = Shape.ROUND_RECTANGLE;
             }
             if (target != null) {
                 item.initPoint(target, hasStateBar);
